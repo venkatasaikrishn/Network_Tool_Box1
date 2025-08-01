@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📰 Tech News Digest</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'bounce-in': 'bounceIn 0.8s ease-out',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .source-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 min-h-screen font-sans">
+
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-2xl">
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center mb-4">
+                    <i class="fas fa-newspaper text-4xl mr-3 animate-bounce-in"></i>
+                    <h1 class="text-5xl font-extrabold tracking-tight animate-fade-in">
+                        Tech News Digest
+                    </h1>
+                </div>
+                <p class="text-lg opacity-90 animate-slide-up">
+                    Curated from the world's leading tech publications
+                </p>
+                <div class="flex justify-center mt-6 space-x-4 animate-slide-up">
+                    <span class="bg-white bg-opacity-20 px-4 py-2 rounded-full text-sm font-medium">
+                        <i class="fas fa-shield-alt mr-2"></i>BleepingComputer
+                    </span>
+                    <span class="bg-white bg-opacity-20 px-4 py-2 rounded-full text-sm font-medium">
+                        <i class="fas fa-coffee mr-2"></i>Morning Brew
+                    </span>
+                    <span class="bg-white bg-opacity-20 px-4 py-2 rounded-full text-sm font-medium">
+                        <i class="fas fa-code mr-2"></i>IT Brew
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Stats Bar -->
+    <div class="bg-white shadow-lg border-b">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex justify-between items-center text-sm text-gray-600">
+                <div class="flex space-x-6">
+                    <span><i class="fas fa-newspaper mr-1"></i>{{ articles.count }} Articles</span>
+                    <span><i class="fas fa-clock mr-1"></i>Updated {{ now|date:"F j, Y" }}</span>
+                </div>
+                <div class="flex space-x-4">
+                    <span class="text-blue-600 font-medium">BleepingComputer: {{ articles|length }}</span>
+                    <span class="text-purple-600 font-medium">Morning Brew: {{ articles|length }}</span>
+                    <span class="text-green-600 font-medium">IT Brew: {{ articles|length }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Article Grid -->
+    <main class="max-w-7xl mx-auto px-4 py-12">
+        {% if articles %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for article in articles %}
+                    <div class="bg-white rounded-2xl shadow-lg card-hover overflow-hidden animate-slide-up" style="animation-delay: {{ forloop.counter0 }}00ms">
+                        <!-- Article Header -->
+                        <div class="p-6">
+                            <!-- Source Badge -->
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="source-badge text-white px-3 py-1 rounded-full text-xs font-semibold">
+                                    <i class="fas fa-external-link-alt mr-1"></i>{{ article.source }}
+                                </span>
+                                <div class="flex space-x-2">
+                                    {% if article.published_date %}
+                                        <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                            <i class="far fa-calendar mr-1"></i>{{ article.published_date|date:"M j" }}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Article Title -->
+                            <a href="{{ article.link }}" target="_blank" class="block group">
+                                <h2 class="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-200 leading-tight mb-4">
+                                    {{ article.title }}
+                                </h2>
+                            </a>
+
+                            <!-- Article Meta -->
+                            <div class="space-y-3">
+                                {% if article.author %}
+                                    <div class="flex items-center text-sm text-gray-600">
+                                        <i class="fas fa-user-circle mr-2 text-blue-500"></i>
+                                        <span>{{ article.author }}</span>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if article.published_date %}
+                                    <div class="flex items-center text-sm text-gray-600">
+                                        <i class="far fa-clock mr-2 text-green-500"></i>
+                                        <span>{{ article.published_date|date:"F j, Y" }}</span>
+                                    </div>
+                                {% endif %}
+
+                                <!-- Source Info -->
+                                <div class="flex items-center text-sm text-gray-600">
+                                    <i class="fas fa-newspaper mr-2 text-purple-500"></i>
+                                    <span>Extracted from: <span class="font-semibold text-gray-800">{{ article.source }}</span></span>
+                                </div>
+                            </div>
+
+                            <!-- Read More Button -->
+                            <div class="mt-6">
+                                <a href="{{ article.link }}" target="_blank" 
+                                   class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm font-medium rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
+                                    <i class="fas fa-external-link-alt mr-2"></i>
+                                    Read Full Article
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Empty State -->
+            <div class="text-center py-20 animate-fade-in">
+                <div class="mb-8">
+                    <i class="fas fa-newspaper text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-2xl font-bold text-gray-700 mb-2">No Articles Found</h3>
+                    <p class="text-gray-500 mb-6">Get started by fetching the latest articles from our sources.</p>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-6 max-w-md mx-auto">
+                    <p class="text-sm text-gray-600 mb-4">Run this command to fetch articles:</p>
+                    <code class="bg-gray-800 text-green-400 px-4 py-2 rounded text-sm font-mono">
+                        python manage.py fetcharticles
+                    </code>
+                </div>
+            </div>
+        {% endif %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 mt-20">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center">
+                <div class="flex items-center justify-center mb-4">
+                    <i class="fas fa-newspaper text-2xl mr-3"></i>
+                    <h3 class="text-2xl font-bold">Tech News Digest</h3>
+                </div>
+                <p class="text-gray-400 mb-6">
+                    Your daily dose of curated tech news from the world's leading publications
+                </p>
+                <div class="flex justify-center space-x-6 text-sm text-gray-400">
+                    <span><i class="fas fa-shield-alt mr-1"></i>BleepingComputer</span>
+                    <span><i class="fas fa-coffee mr-1"></i>Morning Brew</span>
+                    <span><i class="fas fa-code mr-1"></i>IT Brew</span>
+                </div>
+                <div class="mt-6 pt-6 border-t border-gray-800">
+                    <p class="text-gray-500 text-sm">
+                        © {{ now|date:"Y" }} Tech News Digest • Built with ❤️ using Django
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Action Button -->
+    <div class="fixed bottom-8 right-8">
+        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
+                class="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-110">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </div>
+
+    <script>
+        // Add smooth scrolling and animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate cards on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.card-hover').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
+
+</body>
+</html>
